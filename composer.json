@@ -1,0 +1,21 @@
+{
+	"name": "zumba/zumba-coding-standards",
+	"description": "Zumba coding standards",
+	"keywords": ["zumba", "standards", "codesniffer"],
+	"homepage": "http://engineering.zumba.com",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Juan Basso",
+			"email": "juan.basso@zumba.com",
+		},
+		{
+			"name": "Chris Saylor",
+			"email": "christopher.saylor@zumba.com"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0",
+		"squizlabs/php_codesniffer": "1.4.6"
+	}
+}

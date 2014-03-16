@@ -41,7 +41,6 @@
 
 	<rule ref="Generic.NamingConventions.ConstructorName"/>
 	<rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
-	<rule ref="Zumba.NamingConventions.ValidNamespaceName"/>
 	<rule ref="PEAR.NamingConventions.ValidClassName"/>
 	<rule ref="Zumba.NamingConventions.ValidFunctionName"/>
 	<rule ref="Zumba.NamingConventions.ValidVariableName"/>

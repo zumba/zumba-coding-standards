@@ -23,6 +23,6 @@
 	"require": {
 		"php": ">=5.3.10",
 		"squizlabs/php_codesniffer": "1.5.2",
-		"pear-cakephp/CakePHP_CodeSniffer": "*"
+		"pear-pear.cakephp.org/CakePHP_CodeSniffer": "0.1.23"
 	}
 }

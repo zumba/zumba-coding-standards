@@ -14,8 +14,15 @@
 			"email": "christopher.saylor@zumba.com"
 		}
 	],
+	"repositories": [
+		{
+			"type": "pear",
+			"url": "http://pear.cakephp.org"
+		}
+	],
 	"require": {
 		"php": ">=5.3.10",
-		"squizlabs/php_codesniffer": "1.4.6"
+		"squizlabs/php_codesniffer": "1.5.2",
+		"pear-cakephp/CakePHP_CodeSniffer": "*"
 	}
 }

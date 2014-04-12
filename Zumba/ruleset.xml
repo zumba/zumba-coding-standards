@@ -2,6 +2,7 @@
 <ruleset name="Zumba">
 	<description>Zumba Coding Standard</description>
 	<exclude-pattern>Test/*</exclude-pattern>
+	<exclude-pattern>tests/*</exclude-pattern>
 
 	<rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
 

@@ -25,13 +25,20 @@ class Zumba_Sniffs_PHP_DisallowMultipleUseSniff implements PHP_CodeSniffer_Sniff
     protected $firstUse = array();
 
     /**
+     * Whether the current file saw a class.
+     * 
+     * @var bool
+     */
+    protected $sawClass = false;
+
+    /**
      * Returns an array of tokens this test wants to listen for.
      *
      * @return array
      */
     public function register()
     {
-        return array(T_USE);
+        return array(T_USE, T_CLASS);
 
     }//end register()
 
@@ -49,6 +56,15 @@ class Zumba_Sniffs_PHP_DisallowMultipleUseSniff implements PHP_CodeSniffer_Sniff
     {
         $tokens = $phpcsFile->getTokens();
         $filename = $phpcsFile->getFilename();
+
+        // disable for traits:
+        if ($tokens[$stackPtr]['code'] === T_CLASS) {
+            $this->sawClass = true;
+            return;
+        }
+        if ($this->sawClass) {
+            return;
+        }
 
         if (!isset($this->firstUse[$filename])) {
             $this->firstUse[$filename] = $tokens[$stackPtr];

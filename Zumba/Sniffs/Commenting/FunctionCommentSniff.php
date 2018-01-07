@@ -330,9 +330,9 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
                             $endToken = $tokens[$this->_functionToken]['scope_closer'];
                             $this->ensureNoReturnStatementsReturnAValue($tokens, $endToken);
                         }
-                    } else if ($content !== 'mixed') {
-                        // If return type is not void, there needs to be a
-                        // returns statement somewhere in the function that
+                    } else if ($content !== 'mixed' && in_array("\\Generator", $suggestedNames, true) === false) {
+                        // If return type is not void, and the function is not a generator,
+                        // there needs to be a returns statement somewhere in the function that
                         // returns something.
                         if (isset($tokens[$this->_functionToken]['scope_closer']) === true) {
                             $endToken    = $tokens[$this->_functionToken]['scope_closer'];

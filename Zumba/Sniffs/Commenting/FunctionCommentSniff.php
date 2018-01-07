@@ -561,55 +561,55 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
             // exiting, then there is no problem.
             $semicolon = $this->currentFile->findNext(T_WHITESPACE, ($returnToken + 1), null, true);
             if ($tokens[$semicolon]['code'] !== T_SEMICOLON) {
-            	if (!$this->returnIsWithinClosure($tokens, $this->_functionToken, $returnToken)) {
-		            $error = 'Function return type is void, but function contains return statement';
-		            $this->currentFile->addError($error, $returnToken, 'InvalidReturnVoid');
-	            }
+                if (!$this->returnIsWithinClosure($tokens, $this->_functionToken, $returnToken)) {
+                    $error = 'Function return type is void, but function contains return statement';
+                    $this->currentFile->addError($error, $returnToken, 'InvalidReturnVoid');
+                }
             }
             $startToken = $semicolon;
         }
     }//end ensureNoReturnStatementsReturnAValue()
 
-	/**
-	 * Search through the function to determine if the return is within a closure.
-	 *
-	 * @param array $tokens
-	 * @param int $startFunctionToken
-	 * @param int $returnToken
-	 * @return boolean
-	 */
-	private function returnIsWithinClosure($tokens, $startFunctionToken, $returnToken)
-	{
-    	//
-		// We scan backwards in the function looking for curly braces, and keep a count of how many we've seen.
-		// If we see a curly bracket open followed by a function token, then the return is within a function
-		// If the curly bracket count is zero, then we hit a closure that preceeded the return statement but was
-		// not surrounding it.
-		//
-		$openBraceCount = 0;
-		$types = array(T_OPEN_CURLY_BRACKET, T_CLOSE_CURLY_BRACKET, T_CLOSURE);
-		$endToken = $returnToken;
-		while (true) {
-			$tokenPos = $this->currentFile->findPrevious($types, $endToken, $startFunctionToken);
-			if ($tokenPos === false) {
-				break;
-			}
-			switch ($tokens[$tokenPos]['code']) {
-				case T_OPEN_CURLY_BRACKET:
-					$openBraceCount--;
-					break;
-				case T_CLOSE_CURLY_BRACKET:
-					$openBraceCount++;
-					break;
-				case T_CLOSURE:
-					if ($openBraceCount < 0) {
-						return true;
-					}
-					break;
-			}
-			$endToken = $tokenPos - 1;
-		}
-		return false;
-	}//end returnIsWithinClosure()
+    /**
+     * Search through the function to determine if the return is within a closure.
+     *
+     * @param array $tokens
+     * @param int $startFunctionToken
+     * @param int $returnToken
+     * @return boolean
+     */
+    private function returnIsWithinClosure($tokens, $startFunctionToken, $returnToken)
+    {
+        //
+        // We scan backwards in the function looking for curly braces, and keep a count of how many we've seen.
+        // If we see a curly bracket open followed by a function token, then the return is within a function
+        // If the curly bracket count is zero, then we hit a closure that preceeded the return statement but was
+        // not surrounding it.
+        //
+        $openBraceCount = 0;
+        $types = array(T_OPEN_CURLY_BRACKET, T_CLOSE_CURLY_BRACKET, T_CLOSURE);
+        $endToken = $returnToken;
+        while (true) {
+            $tokenPos = $this->currentFile->findPrevious($types, $endToken, $startFunctionToken);
+            if ($tokenPos === false) {
+                break;
+            }
+            switch ($tokens[$tokenPos]['code']) {
+                case T_OPEN_CURLY_BRACKET:
+                    $openBraceCount--;
+                    break;
+                case T_CLOSE_CURLY_BRACKET:
+                    $openBraceCount++;
+                    break;
+                case T_CLOSURE:
+                    if ($openBraceCount < 0) {
+                        return true;
+                    }
+                    break;
+            }
+            $endToken = $tokenPos - 1;
+        }
+        return false;
+    }//end returnIsWithinClosure()
 
 }//end class

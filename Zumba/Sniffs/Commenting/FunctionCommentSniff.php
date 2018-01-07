@@ -541,7 +541,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
     }//end processParams()
 
     /**
-     * Ensure all the return statements within a function return a value.
+     * Ensure no return statements within a function return a value.
      *
      * Also detect return statements within closures, and ignore those.
      *
@@ -549,7 +549,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
      * @param array $endToken
      * @return void
      */
-    private function ensureNoReturnStatementsReturnAValue($tokens, $endToken)
+    protected function ensureNoReturnStatementsReturnAValue($tokens, $endToken)
     {
         $startToken = $this->_functionToken;
         while (true) {
@@ -578,7 +578,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
      * @param int $returnToken
      * @return boolean
      */
-    private function returnIsWithinClosure($tokens, $startFunctionToken, $returnToken)
+    protected function returnIsWithinClosure($tokens, $startFunctionToken, $returnToken)
     {
         //
         // We scan backwards in the function looking for curly braces, and keep a count of how many we've seen.

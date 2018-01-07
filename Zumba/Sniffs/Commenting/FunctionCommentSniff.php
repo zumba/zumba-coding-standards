@@ -546,7 +546,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
      * Also detect return statements within closures, and ignore those.
      *
      * @param array $tokens
-     * @param array $endToken
+     * @param int $endToken
      * @return void
      */
     protected function ensureNoReturnStatementsReturnAValue($tokens, $endToken)
@@ -582,8 +582,8 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
     {
         //
         // We scan backwards in the function looking for curly braces, and keep a count of how many we've seen.
-        // If we see a curly bracket open followed by a function token, then the return is within a function
-        // If the curly bracket count is zero, then we hit a closure that preceeded the return statement but was
+        // If we see a curly bracket open followed by a function token, then the return is within a function.
+        // If the curly bracket count is zero, then we hit a closure that preceded the return statement but was
         // not surrounding it.
         //
         $openBraceCount = 0;

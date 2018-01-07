@@ -328,7 +328,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
                     if ($content === 'void') {
                         if (isset($tokens[$this->_functionToken]['scope_closer']) === true) {
                             $endToken = $tokens[$this->_functionToken]['scope_closer'];
-                            $this->ensureNoReturnStatementsReturnAValue($tokens, $errorPos, $endToken);
+                            $this->ensureNoReturnStatementsReturnAValue($tokens, $endToken);
                         }
                     } else if ($content !== 'mixed') {
                         // If return type is not void, there needs to be a
@@ -546,11 +546,10 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
      * Also detect return statements within closures, and ignore those.
      *
      * @param array $tokens
-     * @param int $errorPos
      * @param array $endToken
      * @return void
      */
-    private function ensureNoReturnStatementsReturnAValue($tokens, $errorPos, $endToken)
+    private function ensureNoReturnStatementsReturnAValue($tokens, $endToken)
     {
         $startToken = $this->_functionToken;
         while (true) {
@@ -564,7 +563,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
             if ($tokens[$semicolon]['code'] !== T_SEMICOLON) {
             	if (!$this->returnIsWithinClosure($tokens, $this->_functionToken, $returnToken)) {
 		            $error = 'Function return type is void, but function contains return statement';
-		            $this->currentFile->addError($error, $errorPos, 'InvalidReturnVoid');
+		            $this->currentFile->addError($error, $returnToken, 'InvalidReturnVoid');
 	            }
             }
             $startToken = $semicolon;

@@ -327,17 +327,8 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
                     // no return statement in the function.
                     if ($content === 'void') {
                         if (isset($tokens[$this->_functionToken]['scope_closer']) === true) {
-                            $endToken    = $tokens[$this->_functionToken]['scope_closer'];
-                            $returnToken = $this->currentFile->findNext(T_RETURN, $this->_functionToken, $endToken);
-                            if ($returnToken !== false) {
-                                // If the function is not returning anything, just
-                                // exiting, then there is no problem.
-                                $semicolon = $this->currentFile->findNext(T_WHITESPACE, ($returnToken + 1), null, true);
-                                if ($tokens[$semicolon]['code'] !== T_SEMICOLON) {
-                                    $error = 'Function return type is void, but function contains return statement';
-                                    $this->currentFile->addError($error, $errorPos, 'InvalidReturnVoid');
-                                }
-                            }
+                            $endToken = $tokens[$this->_functionToken]['scope_closer'];
+                            $this->ensureNoReturnStatementsReturnAValue($tokens, $errorPos, $endToken);
                         }
                     } else if ($content !== 'mixed') {
                         // If return type is not void, there needs to be a
@@ -549,7 +540,77 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
 
     }//end processParams()
 
+    /**
+     * Ensure all the return statements within a function return a value.
+     *
+     * Also detect return statements within closures, and ignore those.
+     *
+     * @param array $tokens
+     * @param int $errorPos
+     * @param array $endToken
+     * @return void
+     */
+    private function ensureNoReturnStatementsReturnAValue($tokens, $errorPos, $endToken)
+    {
+        $startToken = $this->_functionToken;
+        while (true) {
+            $returnToken = $this->currentFile->findNext(T_RETURN, $startToken, $endToken);
+            if ($returnToken === false || $returnToken === $endToken) {
+                break;
+            }
+            // If the function is not returning anything, just
+            // exiting, then there is no problem.
+            $semicolon = $this->currentFile->findNext(T_WHITESPACE, ($returnToken + 1), null, true);
+            if ($tokens[$semicolon]['code'] !== T_SEMICOLON) {
+            	if (!$this->returnIsWithinClosure($tokens, $this->_functionToken, $returnToken)) {
+		            $error = 'Function return type is void, but function contains return statement';
+		            $this->currentFile->addError($error, $errorPos, 'InvalidReturnVoid');
+	            }
+            }
+            $startToken = $semicolon;
+        }
+    }//end ensureNoReturnStatementsReturnAValue()
+
+	/**
+	 * Search through the function to determine if the return is within a closure.
+	 *
+	 * @param array $tokens
+	 * @param int $startFunctionToken
+	 * @param int $returnToken
+	 * @return boolean
+	 */
+	private function returnIsWithinClosure($tokens, $startFunctionToken, $returnToken)
+	{
+    	//
+		// We scan backwards in the function looking for curly braces, and keep a count of how many we've seen.
+		// If we see a curly bracket open followed by a function token, then the return is within a function
+		// If the curly bracket count is zero, then we hit a closure that preceeded the return statement but was
+		// not surrounding it.
+		//
+		$openBraceCount = 0;
+		$types = array(T_OPEN_CURLY_BRACKET, T_CLOSE_CURLY_BRACKET, T_CLOSURE);
+		$endToken = $returnToken;
+		while (true) {
+			$tokenPos = $this->currentFile->findPrevious($types, $endToken, $startFunctionToken);
+			if ($tokenPos === false) {
+				break;
+			}
+			switch ($tokens[$tokenPos]['code']) {
+				case T_OPEN_CURLY_BRACKET:
+					$openBraceCount--;
+					break;
+				case T_CLOSE_CURLY_BRACKET:
+					$openBraceCount++;
+					break;
+				case T_CLOSURE:
+					if ($openBraceCount < 0) {
+						return true;
+					}
+					break;
+			}
+			$endToken = $tokenPos - 1;
+		}
+		return false;
+	}//end returnIsWithinClosure()
 
 }//end class
-
-?>

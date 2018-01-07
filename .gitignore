@@ -1,0 +1,5 @@
+processed/*
+composer.lock
+zumba-coding-standards.iml
+.idea
+vendor

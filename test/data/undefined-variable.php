@@ -1,0 +1,6 @@
+<?php
+$undefinedVariable;
+?>
+--EXPECT--
+
+

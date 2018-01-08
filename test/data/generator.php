@@ -12,7 +12,7 @@ function generatorByItself() {
 /**
  * Short function description
  *
- * @return \Generator|boolean
+ * @return \Generator|boolean[]
  */
 function generatorWithBoolean() {
 	yield true;

@@ -78,17 +78,6 @@ class RunAllTests extends \PHPUnit\Framework\TestCase
 		return __DIR__ . '/../vendor/bin/';
 	}
 
-	/**
-	 * We run the tests from the processed dir because our ruleset has an exclude for dirs that have 'test'
-	 * in them, so that would exclude our tests:
-	 *
-	 * @return string
-	 */
-	protected function processedDir()
-	{
-		return __DIR__ . '/../processed/';
-	}
-
 	protected function openProcessAndGetOutput($cmd, $contents)
 	{
 		$descriptors = array(

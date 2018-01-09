@@ -29,7 +29,7 @@ class Zumba_Sniffs_PHP_DisallowMultipleUseSniff implements PHP_CodeSniffer_Sniff
      *
      * @var array
      */
-    protected $seenClass = array();
+    protected $seenClassOrTrait = array();
 
     /**
      * Returns an array of tokens this test wants to listen for.
@@ -38,7 +38,7 @@ class Zumba_Sniffs_PHP_DisallowMultipleUseSniff implements PHP_CodeSniffer_Sniff
      */
     public function register()
     {
-        return array(T_USE, T_CLASS);
+        return array(T_USE, T_CLASS, T_TRAIT);
 
     }//end register()
 
@@ -58,10 +58,12 @@ class Zumba_Sniffs_PHP_DisallowMultipleUseSniff implements PHP_CodeSniffer_Sniff
         $filename = $phpcsFile->getFilename();
 
         // disable for traits:
-        if ($tokens[$stackPtr]['code'] === T_CLASS) {
-            $this->seenClass[$filename] = true;
+        if ($tokens[$stackPtr]['code'] === T_CLASS ||
+            $tokens[$stackPtr]['code'] === T_TRAIT
+        ) {
+            $this->seenClassOrTrait[$filename] = true;
         }
-        if (!empty($this->seenClass[$filename])) {
+        if (!empty($this->seenClassOrTrait[$filename])) {
             return;
         }
 

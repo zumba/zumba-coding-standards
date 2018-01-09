@@ -17,6 +17,6 @@ function foobar() {
 --------------------------------------------------------------------------------
 FOUND 1 ERROR(S) AFFECTING 1 LINE(S)
 --------------------------------------------------------------------------------
- 6 | ERROR | Function return type is void, but function contains return
-   |       | statement
+ 12 | ERROR | Function return type is void, but function contains return
+    |       | statement
 --------------------------------------------------------------------------------

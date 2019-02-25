@@ -74,6 +74,9 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
         // function has no doc comment.
         $code = $tokens[$commentEnd]['code'];
 
+        $functionName = isset($tokens[$stackPtr + 2]) ? $tokens[$stackPtr + 2]['content'] : '';
+        $isMagic = strpos($functionName, '__') === 0;
+
         if ($code === T_COMMENT) {
             // The function might actually be missing a comment, and this last comment
             // found is just commenting a bit of code on a line. So if it is not the
@@ -87,7 +90,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
                 $phpcsFile->addError($error, $stackPtr, 'WrongStyle');
             }
             return;
-        } else if ($code !== T_DOC_COMMENT) {
+        } else if ($code !== T_DOC_COMMENT && $functionName !== '__toString') {
             $error = 'Missing function doc comment';
             $phpcsFile->addError($error, $stackPtr, 'Missing');
             return;
@@ -101,7 +104,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
         $ignore[]  = T_ABSTRACT;
         $ignore[]  = T_FINAL;
         $prevToken = $phpcsFile->findPrevious($ignore, ($stackPtr - 1), null, true);
-        if ($prevToken !== $commentEnd) {
+        if ($prevToken !== $commentEnd && $functionName !== '__toString') {
             $phpcsFile->addError('Missing function doc comment', $stackPtr, 'Missing');
             return;
         }
@@ -140,7 +143,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
         // The first line of the comment should just be the /** code.
         $eolPos    = strpos($commentString, $phpcsFile->eolChar);
         $firstLine = substr($commentString, 0, $eolPos);
-        if ($firstLine !== '/**') {
+        if ($firstLine !== '/**' && $functionName !== '__toString') {
             $error = 'The open comment tag must be the only content on the line';
             $phpcsFile->addError($error, $commentStart, 'ContentAfterOpen');
         }
@@ -151,8 +154,8 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
 
         // Check for a comment description.
         $short = $comment->getShortComment();
-        if (trim($short) === '') {
-            $error = 'Missing short description in function doc comment';
+        if (!$isMagic && trim($short) === '') {
+            $error = 'Missing short description in function doc comment ';
             $phpcsFile->addError($error, $commentStart, 'MissingShort');
             return;
         }
@@ -160,7 +163,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
         // No extra newline before short description.
         $newlineCount = 0;
         $newlineSpan  = strspn($short, $phpcsFile->eolChar);
-        if ($short !== '' && $newlineSpan > 0) {
+        if ($functionName !== '__toString' && $short !== '' && $newlineSpan > 0) {
             $error = 'Extra newline(s) found before function comment short description';
             $phpcsFile->addError($error, ($commentStart + 1), 'SpacingBeforeShort');
         }
@@ -188,7 +191,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
 
         // Exactly one blank line before tags.
         $params = $this->commentParser->getTagOrders();
-        if (count($params) > 1) {
+        if (count($params) > 1 && (trim($long) !== '' || trim($short) !== '')) {
             $newlineSpan = $comment->getNewlineAfter();
             if ($newlineSpan !== 2) {
                 $error = 'There must be exactly one blank line before the tags in function comment';
@@ -203,15 +206,17 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
 
         // Short description must be single line and end with a full stop.
         $testShort = trim($short);
-        $lastChar  = $testShort[(strlen($testShort) - 1)];
-        if (substr_count($testShort, $phpcsFile->eolChar) !== 0) {
-            $error = 'Function comment short description must be on a single line';
-            $phpcsFile->addError($error, ($commentStart + 1), 'ShortSingleLine');
-        }
+        if ($testShort !== '') {
+            $lastChar  = $testShort[(strlen($testShort) - 1)];
+            if (substr_count($testShort, $phpcsFile->eolChar) !== 0) {
+                $error = 'Function comment short description must be on a single line';
+                $phpcsFile->addError($error, ($commentStart + 1), 'ShortSingleLine');
+            }
 
-        if (preg_match('|[A-Z]|', $testShort[0]) === 0) {
-            $error = 'Function comment short description must start with a capital letter';
-            $phpcsFile->addError($error, ($commentStart + 1), 'ShortNotCapital');
+            if (preg_match('|[A-Z]|', $testShort[0]) === 0) {
+                $error = 'Function comment short description must start with a capital letter';
+                $phpcsFile->addError($error, ($commentStart + 1), 'ShortNotCapital');
+            }
         }
 
         // The last content should be a newline and the content before
@@ -219,10 +224,11 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
         // then they have additional blank lines at the end of the comment.
         $words   = $this->commentParser->getWords();
         $lastPos = (count($words) - 1);
-        if (trim($words[($lastPos - 1)]) !== ''
+        if ($functionName !== '__toString' && (
+            trim($words[($lastPos - 1)]) !== ''
             || strpos($words[($lastPos - 1)], $this->currentFile->eolChar) === false
             || trim($words[($lastPos - 2)]) === ''
-        ) {
+        )) {
             $error = 'Additional blank lines found at end of function comment';
             $this->currentFile->addError($error, $commentEnd, 'SpacingAfter');
         }
@@ -288,6 +294,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
         $return          = $this->commentParser->getReturn();
 
         if ($isSpecialMethod === false && $methodName !== $className) {
+            $tokens = $this->currentFile->getTokens();
             if ($return !== null) {
                 $tagOrder = $this->commentParser->getTagOrders();
                 $index    = array_keys($tagOrder, 'return');
@@ -320,8 +327,6 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
                         $data  = array($content);
                         $this->currentFile->addError($error, $errorPos, 'InvalidReturn', $data);
                     }
-
-                    $tokens = $this->currentFile->getTokens();
 
                     // If the return type is void, make sure there is
                     // no return statement in the function.
@@ -358,6 +363,18 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
                     }
                 }//end if
             } else {
+                // only complain about missing return if no return was specified in the
+                // function signature.
+                // To do this, we check for the presence of a T_STRING between the
+                // parenthesis closer and the scope opener.
+                $functionDef = $tokens[$this->_functionToken];
+                $index = $functionDef['parenthesis_closer'];
+                $end = $functionDef['scope_opener'];
+                while ($index++ < $end) {
+                    if ($tokens[$index]["code"] === \T_STRING) {
+                        return; // we're good.
+                    }
+                }
                 $error = 'Missing @return tag in function comment';
                 $this->currentFile->addError($error, $commentEnd, 'MissingReturn');
             }//end if
@@ -388,7 +405,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
     {
         $realParams  = $this->currentFile->getMethodParameters($this->_functionToken);
         $params      = $this->commentParser->getParams();
-        $foundParams = array();
+        $untypedParams = array();
 
         if (empty($params) === false) {
 
@@ -453,7 +470,9 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
                 // actual parameter.
                 if (isset($realParams[($pos - 1)]) === true) {
                     $realName      = $realParams[($pos - 1)]['name'];
-                    $foundParams[] = $realName;
+                    if (empty($realParams[($pos - 1)]['type_hint'])) {
+                        $untypedParams[] = $realName;
+                    }
 
                     // Append ampersand to name if passing by reference.
                     if ($realParams[($pos - 1)]['pass_by_reference'] === true) {
@@ -519,13 +538,15 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
 
         }//end if
 
+        // Report missing param comments if there is no type hint.
         $realNames = array();
         foreach ($realParams as $realParam) {
-            $realNames[] = $realParam['name'];
+            if ($realParam['type_hint'] === '') {
+                $realNames[] = $realParam['name'];
+            }
         }
 
-        // Report missing comments.
-        $diff = array_diff($realNames, $foundParams);
+        $diff = array_diff($realNames, $untypedParams);
         foreach ($diff as $neededParam) {
             if (count($params) !== 0) {
                 $errorPos = ($params[(count($params) - 1)]->getLine() + $commentStart);

@@ -97,8 +97,6 @@ class Zumba_Sniffs_Commenting_VariableCommentSniff extends Squiz_Sniffs_Commenti
         $short = $comment->getShortComment();
         $long  = '';
         if (trim($short) === '') {
-            $error = 'Missing short description in variable doc comment';
-            $phpcsFile->addError($error, $commentStart, 'MissingShort');
             $newlineCount = 1;
         } else {
             // No extra newline before short description.
@@ -146,7 +144,7 @@ class Zumba_Sniffs_Commenting_VariableCommentSniff extends Squiz_Sniffs_Commenti
 
         // Exactly one blank line before tags.
         $tags = $this->commentParser->getTagOrders();
-        if (count($tags) > 1) {
+        if (count($tags) > 1 && trim($short) !== '') {
             $newlineSpan = $comment->getNewlineAfter();
             if ($newlineSpan !== 2) {
                 $error = 'There must be exactly one blank line before the tags in variable comment';
@@ -247,4 +245,3 @@ class Zumba_Sniffs_Commenting_VariableCommentSniff extends Squiz_Sniffs_Commenti
 
 
 }//end class
-?>

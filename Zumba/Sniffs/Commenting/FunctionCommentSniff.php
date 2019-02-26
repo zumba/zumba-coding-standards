@@ -369,7 +369,9 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
                 // parenthesis closer and the scope opener.
                 $functionDef = $tokens[$this->_functionToken];
                 $index = $functionDef['parenthesis_closer'];
-                $end = $functionDef['scope_opener'];
+                $end = empty($functionDef['scope_opener'])
+                    ? $functionDef['parenthesis_closer'] + 4 // whitespace colon whitespace name
+                    : $functionDef['scope_opener'];
                 while ($index++ < $end) {
                     if ($tokens[$index]["code"] === \T_STRING) {
                         return; // we're good.

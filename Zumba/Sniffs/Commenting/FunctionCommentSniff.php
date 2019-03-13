@@ -373,7 +373,7 @@ class Zumba_Sniffs_Commenting_FunctionCommentSniff extends Squiz_Sniffs_Commenti
                     ? $functionDef['parenthesis_closer'] + 4 // whitespace colon whitespace name
                     : $functionDef['scope_opener'];
                 while ($index++ < $end) {
-                    if ($tokens[$index]["code"] === \T_STRING) {
+                    if ($tokens[$index]["code"] === \T_STRING || $tokens[$index]["code"] === \T_ARRAY_HINT) {
                         return; // we're good.
                     }
                 }

@@ -219,6 +219,7 @@ class Zumba_Sniffs_Commenting_VariableCommentSniff extends Squiz_Sniffs_Commenti
                 $this->currentFile->addError($error, $errorPos, 'MissingVarType');
                 return;
             } else {
+                $content = $content == 'bool' ? 'boolean' : ($content == 'int' ? 'integer' : $content);
                 $suggestedType = PHP_CodeSniffer::suggestType($content);
                 if ($content !== $suggestedType) {
                     $error = 'Expected "%s"; found "%s" for @var tag in variable comment';

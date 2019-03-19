@@ -27,12 +27,6 @@ class Zumba_Sniffs_WhiteSpace_OperatorSpacingSniff
     extends Squiz_Sniffs_WhiteSpace_OperatorSpacingSniff
     implements PHP_CodeSniffer_Sniff {
 
-    private const NULLABLE_TYPE_SKIP_TOKENS = [
-        T_WHITESPACE,
-        T_NS_SEPARATOR,
-        T_STRING,
-    ];
-
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr) {
         $tokens = $phpcsFile->getTokens();
         if ($this->isProbablyNullableType($phpcsFile, $tokens, $stackPtr)) {

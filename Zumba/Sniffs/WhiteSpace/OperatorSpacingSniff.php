@@ -32,7 +32,7 @@ class Zumba_Sniffs_WhiteSpace_OperatorSpacingSniff
         if ($this->isProbablyNullableType($phpcsFile, $tokens, $stackPtr)) {
             return;
         }
-        return parent::process($phpcsFile, $stackPtr);
+        parent::process($phpcsFile, $stackPtr);
     }
 
     private function isProbablyNullableType(PHP_CodeSniffer_File $phpcsFile, $tokens, $stackPtr) {

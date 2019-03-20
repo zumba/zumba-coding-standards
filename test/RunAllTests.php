@@ -2,6 +2,11 @@
 
 namespace Zumba\CodingStandards\Test;
 
+/**
+ * This class loads all the tests in the data/*.php directory and tests
+ * whether the output of the sniffer matches the expectation defined in
+ * the test file.
+ */
 class RunAllTests extends \PHPUnit\Framework\TestCase
 {
 	protected function setUp()
@@ -83,7 +88,7 @@ class RunAllTests extends \PHPUnit\Framework\TestCase
 		$descriptors = array(
 			0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
 			1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-			2 => array("file", "/dev/stderr", 'a') // stderr is a file to write to
+			2 => array("file", "php://stderr", 'a') // stderr is a file to write to
 		);
 		try {
 			$proc = proc_open($cmd, $descriptors, $pipes, $this->topDir());
@@ -97,15 +102,21 @@ class RunAllTests extends \PHPUnit\Framework\TestCase
 				throw new \RuntimeException("Failed writing to pipe (on close)");
 			}
 			$result = stream_get_contents($pipes[1]);
-			fclose($pipes[1]);
+			if (fclose($pipes[1]) === false) {
+				throw new \RuntimeException("Error reading from pipe (on close)");
+			}
+			// Ignore the return value here (it is zero or non-zero depending on whether
+			// the sniffer encountered problems):
 			proc_close($proc);
+			$proc = null;
+
+			// Return the output of the command:
 			return $result;
 
-		} catch (\Exception $e) {
-			if (isset($proc)) {
+		} finally {
+			if ($proc) {
 				proc_close($proc);
 			}
-			throw $e;
 		}
 	}
 }

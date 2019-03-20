@@ -57,7 +57,6 @@
 	<rule ref="Squiz.PHP.NonExecutableCode"/>
 	<rule ref="Generic.PHP.NoSilencedErrors"/>
 	<rule ref="Generic.PHP.LowerCaseConstant"/>
-	<rule ref="Zumba.PHP.DisallowMultipleUse"/>
 
 	<rule ref="Squiz.Scope.MemberVarScope"/>
 	<rule ref="Squiz.Scope.MethodScope"/>

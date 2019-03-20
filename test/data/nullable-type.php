@@ -64,7 +64,7 @@ class NullableTypeTest {
 	 *
 	 * @param \Zumba\CodingStandards\Test\NullableTypeTest $test
 	 */
-	public function absoluteParam(\Zumba\CodingStandards\Test\NullableTypeTest $test) : void {
+	public function absoluteParam(?\Zumba\CodingStandards\Test\NullableTypeTest $test) : void {
 
 	}
 }

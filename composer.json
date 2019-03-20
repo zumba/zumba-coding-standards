@@ -15,7 +15,7 @@
 		}
 	],
 	"require": {
-		"php": ">=7.1",
+		"php": ">=7.2",
 		"squizlabs/php_codesniffer": "1.5.3"
 	},
 	"require-dev": {

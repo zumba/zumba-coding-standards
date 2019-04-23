@@ -9,7 +9,7 @@ function foobar() {
 	$hello = function() {
 		return 'hello';
 	};
-	return "string";
+	return 'string';
 }
 ?>
 --EXPECT--

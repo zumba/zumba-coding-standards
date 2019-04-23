@@ -62,6 +62,7 @@
 	<rule ref="Squiz.Scope.MethodScope"/>
 	<rule ref="Squiz.Scope.StaticThisUsage"/>
 
+	<rule ref="Squiz.Strings.DoubleQuoteUsage"/>
 	<rule ref="Generic.Strings.UnnecessaryStringConcat"/>
 
 	<rule ref="Squiz.WhiteSpace.CastSpacing"/>

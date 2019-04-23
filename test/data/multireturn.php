@@ -6,10 +6,10 @@
  * @return void
  */
 function foobar() {
-	if (strlen("hello")) {
+	if (strlen('hello')) {
 		return;
 	}
-	return "hello";
+	return 'hello';
 }
 ?>
 --EXPECT--

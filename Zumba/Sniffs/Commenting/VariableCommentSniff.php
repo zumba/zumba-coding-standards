@@ -68,6 +68,13 @@ class Zumba_Sniffs_Commenting_VariableCommentSniff extends Squiz_Sniffs_Commenti
         $commentStart  = ($phpcsFile->findPrevious(T_DOC_COMMENT, ($commentEnd - 1), null, true) + 1);
         $commentString = $phpcsFile->getTokensAsString($commentStart, ($commentEnd - $commentStart + 1));
 
+        // if this is a short comment of the form "/** @var sometype */", then ignore it.
+        if ($tokens[$stackPtr]['code'] === T_VARIABLE &&
+            preg_match('%^/\*\* @var .+\*/$%', $commentString)
+        ) {
+            return;
+        }
+
         // Parse the header comment docblock.
         try {
             $this->commentParser = new PHP_CodeSniffer_CommentParser_MemberCommentParser($commentString, $phpcsFile);

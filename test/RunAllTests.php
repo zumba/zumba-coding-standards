@@ -41,8 +41,9 @@ class RunAllTests extends \PHPUnit\Framework\TestCase
 			if (is_dir($file)) {
 				continue;
 			}
-			$files[] = array($file);
+			$files[$file] = array($file);
 		}
+		ksort($files);
 		return $files;
 	}
 

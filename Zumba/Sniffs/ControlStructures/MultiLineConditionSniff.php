@@ -10,6 +10,7 @@
 
 use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Sniffs\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 /**
  * Zumba_Sniffs_ControlStructures_MultiLineConditionSniff.
@@ -104,7 +105,7 @@ class Zumba_Sniffs_ControlStructures_MultiLineConditionSniff implements Sniff
 
                 if ($tokens[$i]['line'] !== $tokens[$closeBracket]['line']) {
                     $next = $phpcsFile->findNext(T_WHITESPACE, $i, null, true);
-                    if (in_array($tokens[$next]['code'], PHP_CodeSniffer_Tokens::$booleanOperators) === true) {
+                    if (in_array($tokens[$next]['code'], Tokens::$booleanOperators) === true) {
                         $error = 'Each line in a multi-line IF statement must not begin with a boolean operator';
                         $phpcsFile->addError($error, $i, 'StartWithBoolean');
                     }

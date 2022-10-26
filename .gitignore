@@ -3,3 +3,4 @@ composer.lock
 zumba-coding-standards.iml
 .idea
 vendor
+.phpunit.result.cache

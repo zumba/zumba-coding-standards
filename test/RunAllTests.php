@@ -2,14 +2,16 @@
 
 namespace Zumba\CodingStandards\Test;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * This class loads all the tests in the data/*.php directory and tests
  * whether the output of the sniffer matches the expectation defined in
  * the test file.
  */
-class RunAllTests extends \PHPUnit\Framework\TestCase
+class RunAllTests extends TestCase
 {
-	protected function setUp()
+	protected function setUp(): void
 	{
 		chdir($this->topDir());
 	}
@@ -21,13 +23,14 @@ class RunAllTests extends \PHPUnit\Framework\TestCase
 	{
 		$contents = file_get_contents($this->dataDir() . $file);
 		list($testFileContents, $expected) = $this->splitExpectedAndTest($contents);
+		$expected = $this->filterAllButErrors($expected);
 
 		$phpcs = $this->vendorBin() . '/phpcs';
 		$cmd = $phpcs . ' --standard=Zumba ';
 		$output = $this->openProcessAndGetOutput($cmd, $testFileContents);
 		$output = $this->filterPhpCsOutput($output);
 
-		$this->assertEquals(trim($expected), $output);
+		$this->assertEquals($expected, $output);
 	}
 
 	public function provideData()
@@ -61,7 +64,7 @@ class RunAllTests extends \PHPUnit\Framework\TestCase
 
 	protected function filterPhpCsOutput($output)
 	{
-		return trim(preg_replace('/FILE:.*/', "", $output));
+		return $this->filterAllButErrors($output);
 	}
 
 	/**
@@ -73,6 +76,17 @@ class RunAllTests extends \PHPUnit\Framework\TestCase
 		list($php, $expect) = explode('--EXPECT--', $contents);
 		$php = preg_replace("/\?>\$/", "", $php); // remove closing tag
 		return array($php, $expect);
+	}
+
+	protected function filterAllButErrors(string $contents): string
+	{
+		$lines = [];
+		foreach (explode("\n", $contents) as $line) {
+			if (preg_match('!\w+\d+ \| ERROR!', $line)) {
+				$lines[] = $line;
+			}
+		}
+		return implode("\n", $lines);
 	}
 
 	/**

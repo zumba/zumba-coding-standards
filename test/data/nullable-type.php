@@ -74,10 +74,10 @@ class NullableTypeTest {
 --------------------------------------------------------------------------------
 FOUND 5 ERROR(S) AFFECTING 2 LINE(S)
 --------------------------------------------------------------------------------
- 17 | ERROR | Expected 1 space before "?"; 0 found
- 17 | ERROR | Expected 1 space after "?"; 0 found
- 17 | ERROR | Expected 1 space before ":"; 0 found
- 17 | ERROR | Expected 1 space after ":"; 0 found
- 18 | ERROR | Expected 1 space after "?"; 0 found
+ 17 | ERROR | [x] Expected 1 space before "?"; 0 found
+ 17 | ERROR | [x] Expected 1 space after "?"; 0 found
+ 17 | ERROR | [x] Expected 1 space before ":"; 0 found
+ 17 | ERROR | [x] Expected 1 space after ":"; 0 found
+ 18 | ERROR | [x] Expected 1 space after "?"; 0 found
 --------------------------------------------------------------------------------
 

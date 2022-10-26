@@ -8,6 +8,9 @@
  * @package   PHP_CodeSniffer
  */
 
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
+
 /**
  * Zumba_Sniffs_ControlStructures_MultiLineConditionSniff.
  *
@@ -16,7 +19,7 @@
  * @category  PHP
  * @package   PHP_CodeSniffer
  */
-class Zumba_Sniffs_ControlStructures_MultiLineConditionSniff implements PHP_CodeSniffer_Sniff
+class Zumba_Sniffs_ControlStructures_MultiLineConditionSniff implements Sniff
 {
 
 
@@ -35,13 +38,13 @@ class Zumba_Sniffs_ControlStructures_MultiLineConditionSniff implements PHP_Code
     /**
      * Processes this test, when one of its tokens is encountered.
      *
-     * @param PHP_CodeSniffer_File $phpcsFile The file being scanned.
+     * @param File $phpcsFile The file being scanned.
      * @param int                  $stackPtr  The position of the current token
      *                                        in the stack passed in $tokens.
      *
      * @return void
      */
-    public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 

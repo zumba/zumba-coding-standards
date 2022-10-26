@@ -20,7 +20,7 @@ function generatorWithBoolean() {
 
 /**
  * Short function description
- * 
+ *
  * @return mixed
  */
 function generatorWithMixedReturn() {

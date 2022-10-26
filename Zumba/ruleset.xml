@@ -16,8 +16,6 @@
 	<rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
 
 	<rule ref="Squiz.Commenting.DocCommentAlignment"/>
-	<rule ref="Zumba.Commenting.VariableComment"/>
-	<rule ref="Zumba.Commenting.FunctionComment"/>
 	<rule ref="Squiz.Commenting.EmptyCatchComment"/>
 	<rule ref="PEAR.Commenting.InlineComment"/>
 	<!--<rule ref="Squiz.Commenting.FunctionCommentThrowTag"/> Need to implement namespace support -->
@@ -68,10 +66,11 @@
 	<rule ref="Squiz.WhiteSpace.LanguageConstructSpacing"/>
 	<rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
 	<rule ref="Squiz.WhiteSpace.MemberVarSpacing"/>
-	<!-- Excluded because it doesn't work with nullable types
-	<rule ref="Squiz.WhiteSpace.OperatorSpacing"/>
-	-->
-	<rule ref="Zumba.WhiteSpace.OperatorSpacing"/>
+	<rule ref="Squiz.WhiteSpace.OperatorSpacing">
+		<properties>
+			<property name="ignoreNewlines" value="true" />
+		</properties>
+	</rule>
 
 	<rule ref="Squiz.WhiteSpace.ScopeClosingBrace"/>
 	<rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
